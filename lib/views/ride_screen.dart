@@ -16,13 +16,13 @@ class RideScreen extends StatelessWidget {
         actions: [
           GetBuilder<RideController>(
             id: 'online_toggle',
-            builder: (_) {
+            builder: (ctrl) {
               return Row(
                 children: [
-                  Text(_.isOnline ? 'Online' : 'Offline'),
+                  Text(ctrl.isOnline ? 'Online' : 'Offline'),
                   Switch(
-                    value: _.isOnline,
-                    onChanged: (val) => _.toggleOnlineStatus(),
+                    value: ctrl.isOnline,
+                    onChanged: (val) => ctrl.toggleOnlineStatus(),
                   ),
                 ],
               );
@@ -35,13 +35,13 @@ class RideScreen extends StatelessWidget {
           // 1. Google Map Layer
           GetBuilder<RideController>(
             id: 'location_update',
-            builder: (_) {
-              if (_.currentLocation == null) {
+            builder: (ctrl) {
+              if (ctrl.currentLocation == null) {
                 return const Center(child: CircularProgressIndicator());
               }
               return GoogleMap(
                 initialCameraPosition: CameraPosition(
-                  target: LatLng(_.currentLocation!.latitude, _.currentLocation!.longitude),
+                  target: LatLng(ctrl.currentLocation!.latitude, ctrl.currentLocation!.longitude),
                   zoom: 14.4746,
                 ),
                 myLocationEnabled: true,
@@ -61,9 +61,9 @@ class RideScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: GetBuilder<RideController>(
                   id: 'ride_status',
-                  builder: (_) {
+                  builder: (ctrl) {
                     return Text(
-                      'Status: ${_.rideStatus}',
+                      'Status: ${ctrl.rideStatus}',
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     );
@@ -76,8 +76,8 @@ class RideScreen extends StatelessWidget {
           // 3. Incoming Ride Dialog Overlay
           GetBuilder<RideController>(
             id: 'incoming_ride_dialog',
-            builder: (_) {
-              if (_.isLoadingRide) {
+            builder: (ctrl) {
+              if (ctrl.isLoadingRide) {
                 return Container(
                   color: Colors.black45,
                   child: const Center(
@@ -98,20 +98,20 @@ class RideScreen extends StatelessWidget {
                 );
               }
 
-              if (_.errorMessage != null) {
+              if (ctrl.errorMessage != null) {
                 return Center(
                   child: Card(
                     color: Colors.red.shade100,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Text(_.errorMessage!, style: const TextStyle(color: Colors.red)),
+                      child: Text(ctrl.errorMessage!, style: const TextStyle(color: Colors.red)),
                     ),
                   ),
                 );
               }
 
-              if (_.incomingRide != null) {
-                final ride = _.incomingRide!;
+              if (ctrl.incomingRide != null) {
+                final ride = ctrl.incomingRide!;
                 return Container(
                   color: Colors.black45,
                   child: Center(
@@ -136,12 +136,12 @@ class RideScreen extends StatelessWidget {
                               children: [
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                                  onPressed: () => _.rejectRide(),
+                                  onPressed: () => ctrl.rejectRide(),
                                   child: const Text("Reject", style: TextStyle(color: Colors.white)),
                                 ),
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                                  onPressed: () => _.acceptRide(),
+                                  onPressed: () => ctrl.acceptRide(),
                                   child: const Text("Accept", style: TextStyle(color: Colors.white)),
                                 ),
                               ],
