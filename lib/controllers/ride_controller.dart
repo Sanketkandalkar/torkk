@@ -37,6 +37,7 @@ class RideController extends GetxController {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      _setFallbackPosition();
       return;
     }
 
@@ -44,15 +45,33 @@ class RideController extends GetxController {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
+        _setFallbackPosition();
         return;
       }
     }
     
     if (permission == LocationPermission.deniedForever) {
+      _setFallbackPosition();
       return;
     } 
 
     currentLocation = await Geolocator.getCurrentPosition();
+    update(['location_update']);
+  }
+
+  void _setFallbackPosition() {
+    currentLocation = Position(
+      longitude: -122.084,
+      latitude: 37.422,
+      timestamp: DateTime.now(),
+      accuracy: 100,
+      altitude: 0,
+      heading: 0,
+      speed: 0,
+      speedAccuracy: 0,
+      altitudeAccuracy: 0,
+      headingAccuracy: 0,
+    );
     update(['location_update']);
   }
 
